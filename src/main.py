@@ -90,7 +90,13 @@ class pelota():
         elif self.posicion[0] > ANCHO - 35 - self.radius:
             if self.posicion[1] > player1.posicion()[0] and self.posicion[1] < player1.posicion()[1]:
                 self.velocidad[0] *= -1
-        
+
+def separador(window):
+    altura =(ALTO - 20) / 8
+    i = 10
+    while i <= ALTO - 10:
+        pygame.draw.rect(window, GRIS, ([ANCHO / 2, i],[5, altura]))
+        i += altura + 10
 
 def main():
     pygame.init()
@@ -109,6 +115,7 @@ def main():
 
         # Fondo
         windows.fill(NEGRO)
+        separador(windows)
         # dibujo de Sprites
         jugador1.dibujar(windows)
         jugador2.dibujar(windows)
@@ -141,6 +148,7 @@ def main():
         jugador1.actualizar()
         jugador2.actualizar()
         pelota1.actualizar(jugador1, jugador2)
+
         pygame.display.update()
 
 
