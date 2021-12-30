@@ -44,6 +44,7 @@ class jugador():
         
         self.velocidad = 0
         self.aceleracion = 2
+        self.puntaje = 0
     
     def mover(self, direccion): # define el movimiento hacia arriba y abajo
         if direccion == "no":
@@ -65,6 +66,9 @@ class jugador():
     
     def posicion(self):
         return [self.pos[1], self.pos[1] + self.dimension[1]]
+    
+    def act_puntuacion(self, punto):
+        self.puntaje += punto
 
 class pelota():
     def __init__(self):
@@ -85,11 +89,19 @@ class pelota():
         
         #rebote horizontal
         if self.posicion[0] < 35 + self.radius:
-            if self.posicion[1] > player1.posicion()[0] and self.posicion[1] < player1.posicion()[1]:
-                self.velocidad[0] *= -1 
+            if self.posicion[1] > player1.posicion()[0] and self.posicion[1] < player1.posicion()[1]: 
+                # si la pelota esta tocando la barra del player 1 rebota
+                self.velocidad[0] *= -1
+            else:
+                # en caso contrario gana el player 2
+                player2.act_puntuacion(1)
         elif self.posicion[0] > ANCHO - 35 - self.radius:
             if self.posicion[1] > player2.posicion()[0] and self.posicion[1] < player2.posicion()[1]:
+                # si la pelota esta tocando la barra del player 2 rebota
                 self.velocidad[0] *= -1
+            else:
+                # en caso contrario gana el player 1
+                player1.act_puntuacion(1)
 
 def separador(window):
     altura =(ALTO - 20) / 8
@@ -148,7 +160,6 @@ def main():
         jugador1.actualizar()
         jugador2.actualizar()
         pelota1.actualizar(jugador1, jugador2)
-
         pygame.display.update()
 
 
