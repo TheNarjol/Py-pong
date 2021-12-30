@@ -7,10 +7,12 @@
 # Inportacion de Modulos
 #--------------------------------
 
-import pygame
-from pygame.locals import *
 import os
 import sys
+import random
+import pygame
+from pygame.locals import *
+
 
 # -----------
 # Constantes
@@ -20,6 +22,7 @@ ANCHO = 640
 ALTO = 480
 NEGRO = (0,0,0)
 BLANCO = (255,255,255)
+GRIS = (100, 100, 100)
 
 # ------------------------------
 # Clases y Funciones utilizadas
@@ -30,7 +33,7 @@ BLANCO = (255,255,255)
 # ------------------------------
 
 class jugador():
-    def __init__(self, player):
+    def __init__(self, player): # el parametro player indica cual de los dos jugadores es
         self.dimension = [10, 100] #tamaño de los sprites
         pos_vertical = ALTO / 2 - self.dimension[1] / 2
         
@@ -59,14 +62,43 @@ class jugador():
 
     def dibujar(self, window): # dibujar la barra del jugador
         pygame.draw.rect(window, BLANCO,[self.pos, self.dimension])
+    
+    def posicion(self):
+        return [self.pos[1], self.pos[1] + self.dimension[1]]
 
+class pelota():
+    def __init__(self):
+        self.radius = 8
+        self.posicion = [ANCHO / 2, ALTO / 2]
+        self.velocidad = [2, random.randrange(1, 3)]
+    
+    def dibujar(self, windows):
+        pygame.draw.circle(windows, BLANCO, self.posicion, self.radius)
+    
+    def actualizar(self, player1, player2):
+        self.posicion[0] += self.velocidad[0]
+        self.posicion[1] += self.velocidad[1]
+
+        #rebote velticar
+        if self.posicion[1] > ALTO - 10 - self.radius or self.posicion[1] < 10 + self.radius :
+            self.velocidad[1] *= -1
+        
+        #rebote horizontal
+        if self.posicion[0] < 35 + self.radius:
+            if self.posicion[1] > player1.posicion()[0] and self.posicion[1] < player1.posicion()[1]:
+                self.velocidad[0] *= -1 
+        elif self.posicion[0] > ANCHO - 35 - self.radius:
+            if self.posicion[1] > player1.posicion()[0] and self.posicion[1] < player1.posicion()[1]:
+                self.velocidad[0] *= -1
+        
 
 def main():
     pygame.init()
 
-    #creacion de los jugadores
+    #creacion de objetos
     jugador1 = jugador(1)
     jugador2 = jugador(2)
+    pelota1 = pelota()
     
     #creacion de la ventana
     windows = pygame.display.set_mode((ANCHO, ALTO))
@@ -77,9 +109,11 @@ def main():
 
         # Fondo
         windows.fill(NEGRO)
-        # Dibujar Jugadores
+        # dibujo de Sprites
         jugador1.dibujar(windows)
         jugador2.dibujar(windows)
+        pelota1.dibujar(windows)
+
 
         # Entradas del teclado y mouse
         for event in pygame.event.get():
@@ -102,9 +136,11 @@ def main():
                     jugador1.mover("no")
                 elif event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                     jugador2.mover("no")
-        
+        # actualizaciones de sprites
+
         jugador1.actualizar()
         jugador2.actualizar()
+        pelota1.actualizar(jugador1, jugador2)
         pygame.display.update()
 
 
