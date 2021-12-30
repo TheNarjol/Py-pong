@@ -95,6 +95,7 @@ class pelota():
             else:
                 # en caso contrario gana el player 2
                 player2.act_puntuacion(1)
+                self.reinicio(1)
         elif self.posicion[0] > ANCHO - 35 - self.radius:
             if self.posicion[1] > player2.posicion()[0] and self.posicion[1] < player2.posicion()[1]:
                 # si la pelota esta tocando la barra del player 2 rebota
@@ -102,6 +103,13 @@ class pelota():
             else:
                 # en caso contrario gana el player 1
                 player1.act_puntuacion(1)
+                self.reinicio(2)
+
+    def reinicio(self, gana):
+        self.posicion = [ANCHO / 2, ALTO / 2]
+        self.velocidad = [2, random.randrange(1, 3)]
+        if gana == 1:
+            self.velocidad[0] *= -1
 
 def separador(window):
     altura =(ALTO - 20) / 8
