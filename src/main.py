@@ -88,7 +88,7 @@ class pelota():
             if self.posicion[1] > player1.posicion()[0] and self.posicion[1] < player1.posicion()[1]:
                 self.velocidad[0] *= -1 
         elif self.posicion[0] > ANCHO - 35 - self.radius:
-            if self.posicion[1] > player1.posicion()[0] and self.posicion[1] < player1.posicion()[1]:
+            if self.posicion[1] > player2.posicion()[0] and self.posicion[1] < player2.posicion()[1]:
                 self.velocidad[0] *= -1
 
 def separador(window):
