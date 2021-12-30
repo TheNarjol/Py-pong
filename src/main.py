@@ -20,13 +20,10 @@ from pygame.locals import *
 
 ANCHO = 640
 ALTO = 480
+FPS = 60
 NEGRO = (0,0,0)
 BLANCO = (255,255,255)
 GRIS = (100, 100, 100)
-
-# ------------------------------
-# Clases y Funciones utilizadas
-# ------------------------------
 
 # ------------------------------
 # Clases y Funciones utilizadas
@@ -43,7 +40,7 @@ class jugador():
             self.pos = [ANCHO - self.dimension[0] - 25, pos_vertical]
         
         self.velocidad = 0
-        self.aceleracion = 2
+        self.aceleracion = 4
         self.puntaje = 0
     
     def mover(self, direccion): # define el movimiento hacia arriba y abajo
@@ -74,7 +71,7 @@ class pelota():
     def __init__(self):
         self.radius = 8
         self.posicion = [ANCHO / 2, ALTO / 2]
-        self.velocidad = [2, random.randrange(1, 3)]
+        self.velocidad = [4, random.randrange(1, 9)]
     
     def dibujar(self, windows):
         pygame.draw.circle(windows, BLANCO, self.posicion, self.radius)
@@ -129,9 +126,11 @@ def main():
     #creacion de la ventana
     windows = pygame.display.set_mode((ANCHO, ALTO))
     pygame.display.set_caption("PyPONG")
-
+    
     #loop Principal
-    while True:
+    run = True
+    clock = pygame.time.Clock()
+    while run:
 
         # Fondo
         windows.fill(NEGRO)
@@ -158,7 +157,8 @@ def main():
                 if event.key == pygame.K_DOWN:
                     jugador2.mover("abajo")
             
-            elif event.type == pygame.KEYUP: # Cuando se deja de Presionar las teclas
+            elif event.type == pygame.KEYUP: 
+                # Cuando se deja de Presionar las teclas
                 if event.key == pygame.K_w or event.key == pygame.K_s:
                     jugador1.mover("no")
                 elif event.key == pygame.K_UP or event.key == pygame.K_DOWN:
@@ -169,6 +169,7 @@ def main():
         jugador2.actualizar()
         pelota1.actualizar(jugador1, jugador2)
         pygame.display.update()
+        clock.tick(FPS)
 
 
 if __name__ == "__main__":
