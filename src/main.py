@@ -20,6 +20,8 @@ from pygame.locals import *
 
 ANCHO = 640
 ALTO = 480
+CENTRO_IZQ = ANCHO * 0.25
+CENTRO_DER = ANCHO * 0.75
 FPS = 60
 NEGRO = (0,0,0)
 BLANCO = (255,255,255)
@@ -104,7 +106,7 @@ class pelota():
 
     def reinicio(self, gana):
         self.posicion = [ANCHO / 2, ALTO / 2]
-        self.velocidad = [2, random.randrange(1, 3)]
+        self.velocidad = [4, random.randrange(1, 9)]
         if gana == 1:
             self.velocidad[0] *= -1
 
@@ -115,8 +117,19 @@ def separador(window):
         pygame.draw.rect(window, GRIS, ([ANCHO / 2, i],[5, altura]))
         i += altura + 10
 
+def puntuacione(window, fuente, jugador, position1):
+    puntuacion = jugador.puntaje
+    text = str(puntuacion)
+    textRender = fuente.render(text, True, BLANCO)
+    cajaText = textRender.get_rect()
+    cajaText.centerx = int(position1)
+    cajaText.centery = 100
+    window.blit(textRender, cajaText)
+
 def main():
     pygame.init()
+
+    ARIAL30 = pygame.font.SysFont("Arial", 30)
 
     #creacion de objetos
     jugador1 = jugador(1)
@@ -130,23 +143,27 @@ def main():
     #loop Principal
     run = True
     clock = pygame.time.Clock()
+    
     while run:
-
         # Fondo
         windows.fill(NEGRO)
         separador(windows)
+        puntuacione(windows, ARIAL30, jugador1, CENTRO_IZQ)
+        puntuacione(windows, ARIAL30, jugador2, CENTRO_DER)
+
         # dibujo de Sprites
         jugador1.dibujar(windows)
         jugador2.dibujar(windows)
         pelota1.dibujar(windows)
 
 
-        # Entradas del teclado y mouse
+        # Eventos
         for event in pygame.event.get():
+            # Quitar juego
             if event.type == pygame.QUIT:
-                sys.exit()
-        #controles
-
+                run = False 
+            
+            #controles
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_w:
                     jugador1.mover("arriba")
@@ -164,12 +181,12 @@ def main():
                 elif event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                     jugador2.mover("no")
         # actualizaciones de sprites
-
         jugador1.actualizar()
         jugador2.actualizar()
         pelota1.actualizar(jugador1, jugador2)
         pygame.display.update()
         clock.tick(FPS)
+    pygame.quit()
 
 
 if __name__ == "__main__":
